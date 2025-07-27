@@ -1,34 +1,58 @@
-model:
-  name: "HybKANViT"
-  img_size: 224
-  patch_size: 16
-  in_chans: 3
-  num_classes: 1000
-  embed_dim: 768
-  depth: 12
-  num_heads: 12
-  mlp_ratio: 4.0
-  qkv_bias: True
-  drop_rate: 0.0
-  attn_drop_rate: 0.0
-  drop_path_rate: 0.1
-  hybrid_type: 1  # 1: Wav-KAN encoder + Eff-KAN head, 2: Eff-KAN encoder + Wav-KAN head
-  wavelet_type: "dog"  # Options: dog, mexican_hat, morlet
+import os
+import yaml
+from typing import Dict, Any
 
-efficient_kan:
-  grid_size: 5
-  spline_order: 3
-  scale_base: 1.0
-  scale_spline: 1.0
-  grid_range: [-1.5, 1.5]
-  grid_eps: 0.02
-  num_grids: 8
+class Config:
+    def __init__(self, config_dict: Dict[str, Any]):
+        self._update(config_dict)
+    
+    def _update(self, config_dict):
+        for key, value in config_dict.items():
+            if isinstance(value, dict):
+                setattr(self, key, Config(value))
+            else:
+                setattr(self, key, value)
+    
+    def __repr__(self):
+        return yaml.dump(self.to_dict(), default_flow_style=False)
+    
+    def to_dict(self):
+        result = {}
+        for key, value in self.__dict__.items():
+            if key.startswith('_'):
+                continue
+            if isinstance(value, Config):
+                result[key] = value.to_dict()
+            else:
+                result[key] = value
+        return result
 
-wavelet_kan:
-  num_scales: 6
-  initial_scale: 1.0
-  central_freq: 5.0  # For Morlet wavelet
-  decomposition_levels: 4
-  pruning_ratio: 0.4
-  scale_base: 1.0
-  grid_eps: 0.02
+def load_config(config_name: str, config_dir: str = None) -> Config:
+    """Load configuration from YAML file
+    
+    Args:
+        config_name: Name of config file without extension (e.g., 'base')
+        config_dir: Directory containing config files (default: './configs')
+    
+    Returns:
+        Config object with nested attributes
+    """
+    if config_dir is None:
+        config_dir = os.path.join(os.path.dirname(__file__))
+    
+    config_path = os.path.join(config_dir, f"{config_name}.yaml")
+    
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"Config file not found: {config_path}")
+    
+    with open(config_path, 'r') as f:
+        config_dict = yaml.safe_load(f)
+    
+    return Config(config_dict)
+
+try:
+    base_config = load_config("base")
+except FileNotFoundError:
+    base_config = None
+
+__all__ = ['Config', 'load_config', 'base_config']
