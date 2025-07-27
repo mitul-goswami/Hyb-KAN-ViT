@@ -83,7 +83,7 @@ class RandomErasing:
         h, w, c = img.shape
         area = h * w
         
-        for _ in range(10):  # Try max 10 times
+        for _ in range(10): 
             erase_area = random.uniform(*self.scale) * area
             aspect_ratio = random.uniform(*self.ratio)
             
@@ -101,7 +101,6 @@ class RandomErasing:
         return Image.fromarray(img)
 
 def get_transforms(dataset, split, img_size):
-    """Get dataset-specific transformations"""
     if dataset == "imagenet":
         return imagenet_transforms(split, img_size)
     elif dataset == "coco":
@@ -112,7 +111,6 @@ def get_transforms(dataset, split, img_size):
         raise ValueError(f"Unknown dataset: {dataset}")
 
 def imagenet_transforms(split, img_size=224):
-    """ImageNet transformations as per paper"""
     if split == "train":
         return T.Compose([
             T.RandomResizedCrop(img_size, scale=(0.08, 1.0), ratio=(3./4., 4./3.)),
@@ -137,7 +135,6 @@ def imagenet_transforms(split, img_size=224):
         ])
 
 def coco_transforms(split, img_size=(800, 1333)):
-    """COCO transformations for detection/segmentation"""
     if split == "train":
         return T.Compose([
             T.Resize(img_size),
@@ -154,7 +151,6 @@ def coco_transforms(split, img_size=(800, 1333)):
         ])
 
 def ade20k_transforms(split, img_size=512):
-    """ADE20K transformations for segmentation"""
     if split == "train":
         return T.Compose([
             T.RandomResizedCrop(img_size, scale=(0.5, 2.0)),
@@ -163,7 +159,7 @@ def ade20k_transforms(split, img_size=512):
             T.ToTensor(),
             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-    else:  
+    else:  # validation
         return T.Compose([
             T.Resize(img_size),
             T.CenterCrop(img_size),
