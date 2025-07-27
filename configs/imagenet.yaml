@@ -1,0 +1,35 @@
+dataset:
+  name: "ImageNet1K"
+  root: "/path/to/imagenet"
+  train_split: "train"
+  val_split: "val"
+  batch_size: 1024
+  num_workers: 16
+  pin_memory: True
+
+training:
+  epochs: 300
+  optimizer: "AdamW"
+  lr: 5e-4
+  weight_decay: 0.05
+  betas: [0.9, 0.98]
+  eps: 1e-8
+  warmup_epochs: 10
+  grad_clip: 1.0
+
+  augmentation:
+    randaugment:
+      magnitude: 9
+    cutmix:
+      prob: 1.0
+    mixup:
+      prob: 0.8
+    random_erase:
+      prob: 0.25
+
+  label_smoothing: 0.1
+  stochastic_depth: 0.1
+  ema_decay: 0.9998
+
+evaluation:
+  metrics: ["top1", "top5"]
