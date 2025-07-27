@@ -1,0 +1,23 @@
+model:
+  decoder: "UPerNet"
+  head_type: "WaveletKAN"  
+
+dataset:
+  name: "ADE20K"
+  root: "/path/to/ade20k"
+  train_split: "training"
+  val_split: "validation"
+  batch_size: 16
+  image_size: [512, 512]  
+  num_workers: 8
+
+training:
+  iterations: 160000
+  optimizer: "AdamW"
+  lr: 6e-5
+  weight_decay: 0.01
+  warmup_iter: 1500
+  fp16: True
+
+evaluation:
+  metric: "mIoU"
