@@ -7,7 +7,7 @@ from utils.train_utils import ExponentialMovingAverage, CosineLRScheduler, clip_
 from utils.metrics import accuracy
 import os
 import time
-import numpy as np
+import numpy as np 
 
 def main():
     torch.manual_seed(42)
