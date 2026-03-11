@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from data.coco import build_coco_dataloader
-from models import HybKANViT
+from models import HybKANViT # import 
 from models.heads import DetectionHead
 from torchvision.models.detection import MaskRCNN
 from torchvision.models.detection.backbone_utils import BackboneWithFPN
