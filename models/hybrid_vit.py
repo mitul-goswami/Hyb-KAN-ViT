@@ -1,4 +1,4 @@
-import torch
+import torch 
 import torch.nn as nn
 from .vit import VisionTransformer
 from .efficient_kan import EfficientKAN
